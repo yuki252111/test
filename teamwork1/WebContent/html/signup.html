@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>signUp</title>
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+   <script src="js/jquery-2.2.3.min.js"></script>
+   <script src="js/jquery.cookie.js"></script>
+   <script src="bootstrap/js/bootstrap.min.js"></script>
+   <script src="js/signup.js"></script>
+   <script src="js/common.js"></script>
+<meta name="viewport" charset="UTF-8" content="width=device-width, 
+                                     initial-scale=1.0, 
+                                     maximum-scale=1.0, 
+                                     user-scalable=no">
+                                     
+</head>
+<body>
+<ul class="nav nav-pills">
+   <li class="active"><a href="signup.html">SignUp</a></li>
+   <li><a href="signin.html">SignIn</a></li>
+</ul>
+<hr/>
+<form class="form-horizontal" id="signupForm">
+   <div class="form-group">
+      <label for="username" class="col-sm-2 control-label">名字</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="username" 
+            placeholder="请输入名字(用户名包含数字和字母)">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="password" class="col-sm-2 control-label">密码</label>
+      <div class="col-sm-10">
+         <input type="password" class="form-control" id="password" 
+            placeholder="请输入密码(6位数数字)">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="tel" class="col-sm-2 control-label">电话号码</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="tel" 
+            placeholder="请输入电话号码(11位数数字)">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="contact" class="col-sm-2 control-label">紧急联络人</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="contact" 
+            placeholder="请输入紧急联络人">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="department1" class="col-sm-2 control-label">一级部门</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="department1" 
+            placeholder="请输入一级部门">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="department2" class="col-sm-2 control-label">二级部门</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="department2" 
+            placeholder="请输入二级部门">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="station" class="col-sm-2 control-label">岗位</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="station" 
+            placeholder="请输入岗位">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="job" class="col-sm-2 control-label">职位</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="job" 
+            placeholder="请输入职位">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="address" class="col-sm-2 control-label">住址</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="address" 
+            placeholder="请输入住址">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="manager" class="col-sm-2 control-label">经理</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="manager" 
+            placeholder="请输入经理">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="date" class="col-sm-2 control-label">入职日期</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="date" 
+            placeholder="请输入入职日期">
+      </div>
+   </div>
+   <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+         <button type="submit" class="btn btn-primary" id="signupBtn">注册</button>
+      </div>
+   </div>
+</form>
+</body>
+</html>

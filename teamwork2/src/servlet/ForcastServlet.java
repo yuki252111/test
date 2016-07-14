@@ -56,14 +56,9 @@ public class ForcastServlet extends HttpServlet{
 	        
 	        String sql="select * from curweather where dt='"+dt+"';";
 	        ResultSet rs=stmt.executeQuery(sql);
-	        JSONObject we=new JSONObject();
+	        JSONObject we = new JSONObject();
 	        if(rs.next()){
-	        	we.put("dt",dt );
-	        	we.put("main",new JSONObject( rs.getString(2)));
-	        	we.put("weather", new JSONObject(rs.getString(3)));
-	        	we.put("clouds", new JSONObject(rs.getString(4)));
-	        	we.put("wind",new JSONObject(rs.getString(5)));
-	        	we.put("sys", new JSONObject(rs.getString(6)));
+	        	we= new JSONObject(rs.getString(7));
 	        }
 	        rs.close();stmt.close();conn.close();
 	        response.getWriter().append(we.toString());
@@ -72,12 +67,12 @@ public class ForcastServlet extends HttpServlet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}//指定连接类型   
- catch (SQLException e) {
+		  catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
 	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
+			e.printStackTrace();
+		}
 	}
 }

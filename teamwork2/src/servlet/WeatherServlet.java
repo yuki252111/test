@@ -72,12 +72,12 @@ public class WeatherServlet extends HttpServlet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}//指定连接类型   
- catch (SQLException e) {
+		catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
 	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
+			e.printStackTrace();
+		}
 	}
 }

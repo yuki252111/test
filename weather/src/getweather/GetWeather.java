@@ -1,6 +1,6 @@
 package getweather;
 import java.io.IOException;
-import java.net.MalformedURLException;
+
 import net.aksingh.owmjapis.*;
 import net.aksingh.owmjapis.HourlyForecast.Forecast;
 
@@ -8,13 +8,20 @@ import org.json.*;
 
 import java.sql.*;
 import java.text.*;
+import java.util.*;
+import java.util.Date;
 
-public class GetWeather {
+public class GetWeather{
+    static class UpdateWeather extends TimerTask {
 	public static final String url = "jdbc:mysql://localhost:3306/weather";  
     public static final String name = "com.mysql.jdbc.Driver";  
     public static final String user = "root";  
     public static final String password = "root"; 
     public static Connection conn = null;
+    public static int days=5;
+    public static int int_default=-1000;
+    public static float float_default=-1000;
+    public static String string_default="";
     
     public static void refreshCur() throws IOException, JSONException, SQLException, ClassNotFoundException{
     	OpenWeatherMap owm = new OpenWeatherMap("50b95478c6c326f917e43f8573170c6f");
@@ -24,6 +31,7 @@ public class GetWeather {
         conn = DriverManager.getConnection(url, user, password);//获取连接
         Statement stmt = conn.createStatement();
     	
+        DecimalFormat df  =  new  DecimalFormat("#.#");
     	
 		CurrentWeather cwd = owm.currentWeatherByCityName("Shanghai");
 		//printing city name from the retrieved data
@@ -31,38 +39,77 @@ public class GetWeather {
 			// checking if city name is available
             SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd");
             String dt=dateFm.format(new java.util.Date());
-            
+             
             JSONObject main=new JSONObject();
             if(cwd.hasMainInstance()){
-            main.put("temp",cwd.getMainInstance().getTemperature() );
-            main.put("temp_min", cwd.getMainInstance().getMinTemperature());
-            main.put("temp_max", cwd.getMainInstance().getMaxTemperature());
-            main.put("pressure", cwd.getMainInstance().getPressure());
-            main.put("humidity", cwd.getMainInstance().getHumidity());
+            	if(cwd.getMainInstance().hasTemperature())
+            		main.put("temp",Float.valueOf(df.format(cwd.getMainInstance().getTemperature())));
+            	else
+            		main.put("temp",float_default);
+            	if(cwd.getMainInstance().hasMinTemperature())
+            		main.put("temp_min", Float.valueOf(df.format(cwd.getMainInstance().getMinTemperature())));
+            	else
+            		main.put("temp_min",float_default);
+            	if(cwd.getMainInstance().hasMaxTemperature())
+            		main.put("temp_max", Float.valueOf(df.format(cwd.getMainInstance().getMaxTemperature())));
+            	else
+            		main.put("temp_max", float_default);
+            	if(cwd.getMainInstance().hasPressure())
+            		main.put("pressure", Float.valueOf(df.format(cwd.getMainInstance().getPressure())));
+            	else
+            		main.put("pressure", float_default);
+            	if(cwd.getMainInstance().hasHumidity())
+            		main.put("humidity", Float.valueOf(df.format(cwd.getMainInstance().getHumidity())));
+            	else
+            		main.put("humidity", float_default);
             }
             
             JSONObject weather=new JSONObject();
             if(cwd.hasWeatherInstance()){
-            weather.put("id", cwd.getWeatherInstance(0).getWeatherCode());
-            weather.put("main", cwd.getWeatherInstance(0).getWeatherName());
-            weather.put("description", cwd.getWeatherInstance(0).getWeatherDescription());
-            weather.put("icon", cwd.getWeatherInstance(0).getWeatherIconName());
+            	if(cwd.getWeatherInstance(0).hasWeatherCode())
+            		weather.put("id", cwd.getWeatherInstance(0).getWeatherCode());
+            	else
+            		weather.put("id", int_default);
+            	if(cwd.getWeatherInstance(0).hasWeatherName())
+            		weather.put("main", cwd.getWeatherInstance(0).getWeatherName());
+            	else
+            		weather.put("main", string_default);
+            	if(cwd.getWeatherInstance(0).hasWeatherDescription())
+            		weather.put("description", cwd.getWeatherInstance(0).getWeatherDescription());
+            	else
+            		weather.put("description", string_default);
+            	if(cwd.getWeatherInstance(0).hasWeatherIconName())
+            		weather.put("icon", cwd.getWeatherInstance(0).getWeatherIconName());
+            	else
+            		weather.put("icon", string_default);
             }
             
             JSONObject cloud=new JSONObject();
             if(cwd.hasCloudsInstance()){
-            cloud.put("clouds", cwd.getCloudsInstance().getPercentageOfClouds());
+            	if(cwd.getCloudsInstance().hasPercentageOfClouds())
+            		cloud.put("clouds", Float.valueOf(df.format(cwd.getCloudsInstance().getPercentageOfClouds())));
+            	else
+            		cloud.put("clouds", float_default);
             }
             
             JSONObject wind=new JSONObject();
             if(cwd.hasWindInstance()){
-            wind.put("speed", cwd.getWindInstance().getWindSpeed());
-            wind.put("deg", cwd.getWindInstance().getWindDegree());
+            	if(cwd.getWindInstance().hasWindSpeed())
+            		wind.put("speed", Float.valueOf(df.format(cwd.getWindInstance().getWindSpeed())));
+            	else
+            		wind.put("speed", float_default);
+            	if(cwd.getWindInstance().hasWindDegree())
+            		wind.put("deg", Float.valueOf(df.format(cwd.getWindInstance().getWindDegree())));
+            	else
+            		wind.put("deg", float_default);
             }
             
             JSONObject sys=new JSONObject();
             if(cwd.hasSysInstance()){
-            sys.put("pod", cwd.getSysInstance().getCountryCode());
+            	if(cwd.getSysInstance().hasCountryCode())
+            		sys.put("pod", cwd.getSysInstance().getCountryCode());
+            	else
+            		sys.put("pod", string_default);
             }
             
             HourlyForecast hw=owm.hourlyForecastByCityName("Shanghai");
@@ -92,35 +139,74 @@ public class GetWeather {
             		
             		JSONObject fc_main=new JSONObject();
                     if(fc.hasMainInstance()){
-                    fc_main.put("temp",cwd.getMainInstance().getTemperature() );
-                    fc_main.put("temp_min", cwd.getMainInstance().getMinTemperature());
-                    fc_main.put("temp_max", cwd.getMainInstance().getMaxTemperature());
-                    fc_main.put("pressure", cwd.getMainInstance().getPressure());
-                    fc_main.put("humidity", cwd.getMainInstance().getHumidity());
+                    	if(fc.getMainInstance().hasTemperature())
+                    		fc_main.put("temp",Float.valueOf(df.format(fc.getMainInstance().getTemperature())));
+                    	else
+                    		fc_main.put("temp", float_default);
+                    	if(fc.getMainInstance().hasMinTemperature())
+                    		fc_main.put("temp_min", Float.valueOf(df.format(fc.getMainInstance().getMinTemperature())));
+                    	else
+                    		fc_main.put("temp_min", float_default);
+                    	if(fc.getMainInstance().hasMaxTemperature())
+                    		fc_main.put("temp_max",Float.valueOf(df.format(fc.getMainInstance().getMaxTemperature())));
+                    	else
+                    		fc_main.put("temp_max", float_default);
+                    	if(fc.getMainInstance().hasPressure())
+                    		fc_main.put("pressure", Float.valueOf(df.format(fc.getMainInstance().getPressure())));
+                    	else
+                    		fc_main.put("pressure", float_default);
+                    	if(fc.getMainInstance().hasHumidity())
+                    		fc_main.put("humidity", Float.valueOf(df.format(fc.getMainInstance().getHumidity())));
+                    	else
+                    		fc_main.put("humidity",float_default );
                     }
                     
                     JSONObject fc_weather=new JSONObject();
                     if(fc.hasWeatherInstance()){
-                    	fc_weather.put("id", cwd.getWeatherInstance(0).getWeatherCode());
-                    	fc_weather.put("main", cwd.getWeatherInstance(0).getWeatherName());
-                    	fc_weather.put("description", cwd.getWeatherInstance(0).getWeatherDescription());
-                    	fc_weather.put("icon", cwd.getWeatherInstance(0).getWeatherIconName());
+                    	if(fc.getWeatherInstance(0).hasWeatherCode())
+                    		fc_weather.put("id", fc.getWeatherInstance(0).getWeatherCode());
+                    	else
+                    		fc_weather.put("id", int_default);
+                    	if(fc.getWeatherInstance(0).hasWeatherName())
+                    		fc_weather.put("main", fc.getWeatherInstance(0).getWeatherName());
+                    	else
+                    		fc_weather.put("main", string_default);
+                    	if(fc.getWeatherInstance(0).hasWeatherDescription())
+                    		fc_weather.put("description", fc.getWeatherInstance(0).getWeatherDescription());
+                    	else
+                    		fc_weather.put("description", string_default);
+                    	if(fc.getWeatherInstance(0).hasWeatherIconName())
+                    		fc_weather.put("icon", fc.getWeatherInstance(0).getWeatherIconName());
+                    	else
+                    		fc_weather.put("icon", string_default);
                     }
                     
                     JSONObject fc_cloud=new JSONObject();
                     if(fc.hasCloudsInstance()){
-                    	fc_cloud.put("clouds", cwd.getCloudsInstance().getPercentageOfClouds());
+                    	if(fc.getCloudsInstance().hasPercentageOfClouds())
+                    		fc_cloud.put("clouds",Float.valueOf(df.format(fc.getCloudsInstance().getPercentageOfClouds())));
+                    	else
+                    		fc_cloud.put("clouds", float_default);
                     }
                     
                     JSONObject fc_wind=new JSONObject();
                     if(fc.hasWindInstance()){
-                    	fc_wind.put("speed", cwd.getWindInstance().getWindSpeed());
-                    	fc_wind.put("deg", cwd.getWindInstance().getWindDegree());
+                    	if(fc.getWindInstance().hasWindSpeed())
+                    		fc_wind.put("speed", Float.valueOf(df.format(fc.getWindInstance().getWindSpeed())));
+                    	else
+                    		fc_wind.put("speed", float_default);
+                    	if(fc.getWindInstance().hasWindDegree())
+                    		fc_wind.put("deg", Float.valueOf(df.format(fc.getWindInstance().getWindDegree())));
+                    	else
+                    		fc_wind.put("deg", float_default);
                     }
                     
                     JSONObject fc_sys=new JSONObject();
                     if(fc.hasSysInstance()){
-                    	fc_sys.put("pod", cwd.getSysInstance().getCountryCode());
+                    	if(fc.getSysInstance().hasPod())
+                    		fc_sys.put("pod", fc.getSysInstance().getPod());
+                    	else
+                    		fc_sys.put("pod", string_default);
                     }
                     JSONObject fc_one=new JSONObject();
                     fc_one.put("dt", fc_dt);
@@ -132,12 +218,27 @@ public class GetWeather {
                     arr.put(fc_one);
             	}
             }
+            JSONObject modifyFuture=new JSONObject();
             
-            String sql="update curweather set main='"+main+"',weather='"+weather+"',clouds='"+cloud+"',wind='"+wind+"',sys='"+sys+"',future='"+future5+"' where dt='"+dt+"';";
+            Date date=new Date();//取时间
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = formatter.format(date);
+            modifyFuture.put("0", future5.get(dateString));
+            
+            for(int i=1;i<days;i++){
+            	calendar.add(Calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动
+            	date=calendar.getTime(); //这个时间就是日期往后推一天的结果
+            	dateString = formatter.format(date);
+                modifyFuture.put(i+"", future5.get(dateString));
+            }
+            
+            String sql="update curweather set main='"+main+"',weather='"+weather+"',clouds='"+cloud+"',wind='"+wind+"',sys='"+sys+"',future='"+modifyFuture+"' where dt='"+dt+"';";
             int res=stmt.executeUpdate(sql);
             if(res==0){
             	System.out.println("update wrong");
-            	sql="insert into curweather values ('"+dt+"','"+main+"','"+weather+"','"+cloud+"','"+wind+"','"+sys+"','"+future5+"');";
+            	sql="insert into curweather values ('"+dt+"','"+main+"','"+weather+"','"+cloud+"','"+wind+"','"+sys+"','"+modifyFuture+"');";
             	res=stmt.executeUpdate(sql);
             	if(res==0){
             		System.out.println("insert wrong");
@@ -148,10 +249,29 @@ public class GetWeather {
         conn.close();
     }
 
-	public static void main(String[] args) throws ClassNotFoundException, IOException, JSONException, SQLException {
+	public void run()  {
 		// TODO Auto-generated method stub {
 			// declaring object of "OpenWeatherMap" class
-			refreshCur();
+			System.out.println("exe");
+			try {
+				refreshCur();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
-	
+}
+    public static void main(String[] args) {  
+        Timer timer = new Timer();  
+        timer.schedule(new UpdateWeather(), 2000,3000);// 两秒后启动任务  
+    }  
 }

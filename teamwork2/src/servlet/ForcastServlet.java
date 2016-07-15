@@ -42,7 +42,6 @@ public class ForcastServlet extends HttpServlet{
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("ok");
 		response.setContentType("text/json");
 		response.setCharacterEncoding("UTF-8");
 		//doGet(request, response);
@@ -58,9 +57,10 @@ public class ForcastServlet extends HttpServlet{
 	        ResultSet rs=stmt.executeQuery(sql);
 	        JSONObject we = new JSONObject();
 	        if(rs.next()){
-	        	we= new JSONObject(rs.getString(7));
+	        	we= new JSONObject(rs.getString("future"));
 	        }
 	        rs.close();stmt.close();conn.close();
+			System.out.println("forcast:"+we.toString());
 	        response.getWriter().append(we.toString());
 			
 		} catch (ClassNotFoundException e) {

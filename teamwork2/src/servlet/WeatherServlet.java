@@ -42,7 +42,6 @@ public class WeatherServlet extends HttpServlet{
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("ok");
 		response.setContentType("text/json");
 		response.setCharacterEncoding("UTF-8");
 		//doGet(request, response);
@@ -59,13 +58,14 @@ public class WeatherServlet extends HttpServlet{
 	        JSONObject we=new JSONObject();
 	        if(rs.next()){
 	        	we.put("dt",dt );
-	        	we.put("main",new JSONObject( rs.getString(2)));
-	        	we.put("weather", new JSONObject(rs.getString(3)));
-	        	we.put("clouds", new JSONObject(rs.getString(4)));
-	        	we.put("wind",new JSONObject(rs.getString(5)));
-	        	we.put("sys", new JSONObject(rs.getString(6)));
+	        	we.put("main",new JSONObject( rs.getString("main")));
+	        	we.put("weather", new JSONObject(rs.getString("weather")));
+	        	we.put("clouds", new JSONObject(rs.getString("clouds")));
+	        	we.put("wind",new JSONObject(rs.getString("wind")));
+	        	we.put("sys", new JSONObject(rs.getString("sys")));
 	        }
 	        rs.close();stmt.close();conn.close();
+			System.out.println("now: "+we.toString());
 	        response.getWriter().append(we.toString());
 			
 		} catch (ClassNotFoundException e) {

@@ -13,10 +13,10 @@ import java.util.Date;
 
 public class GetWeather{
     static class UpdateWeather extends TimerTask {
-	public static final String url = "jdbc:mysql://localhost:3306/weather";  
+	public static final String url = "jdbc:mysql://localhost:3306/bxweather";  
     public static final String name = "com.mysql.jdbc.Driver";  
-    public static final String user = "root";  
-    public static final String password = "root"; 
+    public static final String user = "baixing";  
+    public static final String password = "baixing"; 
     public static Connection conn = null;
     public static int days=5;
     public static int int_default=-1000;
@@ -227,11 +227,13 @@ public class GetWeather{
             String dateString = formatter.format(date);
             modifyFuture.put("0", future5.get(dateString));
             
+            days=future5.length();
             for(int i=1;i<days;i++){
             	calendar.add(Calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动
             	date=calendar.getTime(); //这个时间就是日期往后推一天的结果
             	dateString = formatter.format(date);
-                modifyFuture.put(i+"", future5.get(dateString));
+            	if(future5.has(dateString))
+            		modifyFuture.put(i+"", future5.get(dateString));
             }
             
             String sql="update curweather set main='"+main+"',weather='"+weather+"',clouds='"+cloud+"',wind='"+wind+"',sys='"+sys+"',future='"+modifyFuture+"' where dt='"+dt+"';";
@@ -272,6 +274,6 @@ public class GetWeather{
 }
     public static void main(String[] args) {  
         Timer timer = new Timer();  
-        timer.schedule(new UpdateWeather(), 2000,3000);// 两秒后启动任务  
+        timer.schedule(new UpdateWeather(), 2000,5000);// 两秒后启动任务  
     }  
 }

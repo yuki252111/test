@@ -15,10 +15,10 @@ import org.json.JSONObject;
 public class ForcastServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	//private static Boolean isOn=false;
-	public static final String url = "jdbc:mysql://localhost:3306/weather";  
+	public static final String url = "jdbc:mysql://localhost:3306/bxweather";  
     public static final String name = "com.mysql.jdbc.Driver";  
-    public static final String user = "root";  
-    public static final String password = "root"; 
+    public static final String user = "baixing";  
+    public static final String password = "baixing"; 
     public static Connection conn = null; 
     
     /**

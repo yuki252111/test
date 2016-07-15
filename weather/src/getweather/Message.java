@@ -10,9 +10,9 @@ import org.json.*;
 public class Message{
 	
     static class AutoGet extends TimerTask {
-	static private  String url1="http://172.17.0.211:1234/api/weather/now";
-	static private  String url2="http://172.17.0.211:1234/api/msg/push";
-	static private  String url3="http://172.17.0.211:1234/api/user/login";
+	static private  String url1="http://localhost:1234/api/weather/now";
+	static private  String url2="http://localhost:1234/api/msg/push";
+	static private  String url3="http://localhost:1234/api/user/login";
 	static public  String clock_time="13:22:00";
 	static private String session_id = "";
 	static private String session_cookie_name = "";
@@ -127,6 +127,9 @@ public class Message{
 		if(input_str.equalsIgnoreCase("drizzle")){
 			return "毛毛雨";
 		}
+		if(input_str.equalsIgnoreCase("mist")){
+			return "雾";
+		}
 		return "未知";
 	}
 	
@@ -149,6 +152,9 @@ public class Message{
     				   throw new Exception("auto login failed!\n");
     			   }
 			   }
+			   Date date=new Date();
+			   SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			   
 			   String weather_output_str=sendGet(url1);
 			   JSONObject weather_output_json=new JSONObject(weather_output_str);
 			   JSONObject msg_input_json=new JSONObject();
@@ -156,9 +162,9 @@ public class Message{
 			   msg_input_str+=" 气温 "+weather_output_json.getJSONObject("main").getDouble("temp_min")+" ~ ";
 			   msg_input_str+=weather_output_json.getJSONObject("main").getDouble("temp_max")+",";
 			   msg_input_str+=" 气压 "+weather_output_json.getJSONObject("main").getDouble("pressure")+"。";
-			   msg_input_json.put("title", msg_input_str);
-			   msg_input_json.put("editor", "百姓 Life 提醒您");
-			   msg_input_json.put("details", "");
+			   msg_input_json.put("title", "天气预报  "+df.format(date));
+			   msg_input_json.put("editor", "");
+			   msg_input_json.put("details", msg_input_str);
 			   msg_input_json.put("url", "");
 			   
 			   String msg_output_str=sendPost(url2,msg_input_json.toString());
@@ -198,7 +204,7 @@ public class Message{
     	}
        */
         Timer timer = new Timer();  
-        timer.schedule(new AutoGet(), 1000,1000*3); 
+        timer.schedule(new AutoGet(), 1000,1000*5); 
     	
     }  
 }
